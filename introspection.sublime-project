@@ -1,0 +1,33 @@
+{
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				"build"
+			],
+			"name": "introspection",
+			"path": "."
+		}
+	],
+	"build_systems":
+	[
+		{
+			"name": "generate",
+			"cmd": ["cmake", "-G", "Ninja", "-S", "src", "-B", "build", "-D", "CMAKE_BUILD_TYPE=RelWithDebInfo" ],
+			"working_dir": "${project_path}",
+			"file_regex": "^(.*):([0-9]+):([0-9]+): error:",
+		},
+		{
+			"name": "build",
+			"cmd": ["cmake", "--build", "build" ],
+			"working_dir": "${project_path}",
+			"file_regex": "^(.*):([0-9]+):([0-9]+): error:",
+		},
+		{
+			"name": "run",
+			"cmd": ["build/test" ],
+			"working_dir": "${project_path}",
+		},
+	],
+}
