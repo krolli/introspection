@@ -2,12 +2,19 @@
 #include "span.hpp"
 
 struct Type;
+struct ClassType;
+
+enum class TypeCategory : char
+{
+    Fundamental,
+    Class,
+};
 
 struct BaseType
 {
     using AccessFn = void* (void*);
 
-    Type const* type;
+    ClassType const* type;
     AccessFn* access;
 };
 
@@ -22,14 +29,43 @@ struct Member
 
 struct Type
 {
+    TypeCategory category;
     char const* name;
     size_t size;
     size_t alignment;
+};
+
+struct FundamentalType : Type
+{
+};
+
+struct ClassType : Type
+{
     Span<BaseType const> baseTypes;
     Span<Member const> members;
 };
 
 template<class T> struct TypeOf { };
+
+struct DataIter
+{
+    void* data;
+    Type const* type;
+
+    DataIter AccessMember(Member const& member)
+    {
+        // assert(type && data);
+        // assert(&member - type->members.start < type->members.length);
+        return DataIter{member.access(this->data), member.type};
+    }
+
+    DataIter AccessBaseType(BaseType const& base)
+    {
+        // assert(type && data);
+        // assert(&base - type->baseTypes.start < type->baseTypes.length);
+        return DataIter{base.access(this->data), base.type};
+    }
+};
 
 template<class T, class B>
 void* InstanceToBase(void* selfAddr)
@@ -46,11 +82,14 @@ void* InstanceToMember(void* selfAddr)
     return &(self->*ptr);
 }
 
-#define mel_SpecializeTypeOf(typeName) \
-    template<> struct TypeOf<typeName> { static Type const* const value; };
+#define mel_SpecializeTypeOf_Fundamental(typeName) \
+    template<> struct TypeOf<typeName> { static FundamentalType const* const value; };
 
-#define mel_SpecializeTypeOfImpl(typeName) \
-    Type const* const TypeOf<typeName>::value = &typeName##_type;
+#define mel_SpecializeTypeOf_Class(typeName) \
+    template<> struct TypeOf<typeName> { static ClassType const* const value; };
+
+#define mel_SpecializeTypeOfImpl_Class(typeName) \
+    ClassType const* const TypeOf<typeName>::value = &typeName##_type;
 
 #define mel_MakeMemberInfo(ownerType, memberType, memberName) \
     {#memberName, TypeOf<memberType>::value, InstanceToMember<ownerType, memberType, &ownerType::memberName>}
@@ -58,21 +97,21 @@ void* InstanceToMember(void* selfAddr)
 #define mel_MakeBaseTypeInfo(type, baseType) \
     {TypeOf<baseType>::value, InstanceToBase<type, baseType>}
 
-mel_SpecializeTypeOf(bool)
+mel_SpecializeTypeOf_Fundamental(bool)
 
-mel_SpecializeTypeOf(char)
-mel_SpecializeTypeOf(signed char)
-mel_SpecializeTypeOf(unsigned char)
+mel_SpecializeTypeOf_Fundamental(char)
+mel_SpecializeTypeOf_Fundamental(signed char)
+mel_SpecializeTypeOf_Fundamental(unsigned char)
 
-mel_SpecializeTypeOf(signed short int)
-mel_SpecializeTypeOf(signed int)
-mel_SpecializeTypeOf(signed long int)
-mel_SpecializeTypeOf(signed long long int)
-mel_SpecializeTypeOf(unsigned short int)
-mel_SpecializeTypeOf(unsigned int)
-mel_SpecializeTypeOf(unsigned long int)
-mel_SpecializeTypeOf(unsigned long long int)
+mel_SpecializeTypeOf_Fundamental(signed short int)
+mel_SpecializeTypeOf_Fundamental(signed int)
+mel_SpecializeTypeOf_Fundamental(signed long int)
+mel_SpecializeTypeOf_Fundamental(signed long long int)
+mel_SpecializeTypeOf_Fundamental(unsigned short int)
+mel_SpecializeTypeOf_Fundamental(unsigned int)
+mel_SpecializeTypeOf_Fundamental(unsigned long int)
+mel_SpecializeTypeOf_Fundamental(unsigned long long int)
 
-mel_SpecializeTypeOf(float)
-mel_SpecializeTypeOf(double)
-mel_SpecializeTypeOf(long double)
+mel_SpecializeTypeOf_Fundamental(float)
+mel_SpecializeTypeOf_Fundamental(double)
+mel_SpecializeTypeOf_Fundamental(long double)
