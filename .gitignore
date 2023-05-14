@@ -1,2 +1,6 @@
 introspection.sublime-workspace
 build/
+build-by-hand/.ninja-build-dir
+build-by-hand/obj
+build-by-hand/test
+

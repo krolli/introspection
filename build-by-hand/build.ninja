@@ -1,0 +1,7 @@
+src_path = ../src
+dst_path = ./obj
+
+include rules.ninja
+include targets.ninja
+
+build all: phony test

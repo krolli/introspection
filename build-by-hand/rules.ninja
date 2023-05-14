@@ -1,0 +1,20 @@
+ninja_required_version = 1.3
+builddir = .ninja-build-dir
+
+# Specifying how to extract dependenices (deps requires version 1.3):
+# 1. deps = gcc
+#   - depfile - Specifies file containing dependencies in the Makefile format.
+#   - command - Has to include command line arguments that will cause compilation to output depfile.
+# 2. deps = msvc
+#   - msvc_deps_prefix - Localized string in front of the header file path, eg. "Note: including file:". Requires version 1.5.
+#   - command - Has to include command line arguments that will cause compilation to output MSVC-style dependencies in stdout.
+
+rule compile_cpp
+  deps = gcc
+  depfile = $out.dep
+  command = g++ -MD -MF $out.dep -Wall -Werror -c $in -o $out
+  description = Compiling $in
+
+rule link
+  command = g++ $in -o $out
+  description = Linking $out

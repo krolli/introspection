@@ -1,0 +1,4 @@
+build $dst_path/main.o: compile_cpp $src_path/main.cpp
+build $dst_path/classes.o: compile_cpp $src_path/classes.cpp
+build $dst_path/introspection.o: compile_cpp $src_path/introspection.cpp
+build test: link $dst_path/main.o $dst_path/classes.o $dst_path/introspection.o
