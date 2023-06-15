@@ -82,14 +82,14 @@ void* InstanceToMember(void* selfAddr)
     return &(self->*ptr);
 }
 
-#define mel_SpecializeTypeOf_Fundamental(typeName) \
-    template<> struct TypeOf<typeName> { static FundamentalType const* const value; };
+#define mel_SpecializeTypeOf_(typeCategory, typeName) \
+    template<> struct TypeOf<typeName> { static typeCategory const inst; static inline constexpr typeCategory const * const value = &inst; };
 
-#define mel_SpecializeTypeOf_Class(typeName) \
-    template<> struct TypeOf<typeName> { static ClassType const* const value; };
+#define mel_SpecializeTypeOf_Fundamental(typeName) mel_SpecializeTypeOf_(FundamentalType, typeName)
+#define mel_SpecializeTypeOf_Class(typeName) mel_SpecializeTypeOf_(ClassType, typeName)
 
 #define mel_SpecializeTypeOfImpl_Class(typeName) \
-    ClassType const* const TypeOf<typeName>::value = &typeName##_type;
+    ClassType const TypeOf<typeName>::inst = typeName##_type;
 
 #define mel_MakeMemberInfo(ownerType, memberType, memberName) \
     {#memberName, TypeOf<memberType>::value, InstanceToMember<ownerType, memberType, &ownerType::memberName>}

@@ -2,7 +2,7 @@
 
 #define mel_SpecializeTypeOfImpl_Fundamental(typeName, valName) \
     static constexpr const FundamentalType valName = {TypeCategory::Fundamental, #typeName, sizeof(typeName), alignof(typeName)}; \
-    FundamentalType const* const TypeOf<typeName>::value = &valName;
+    FundamentalType const TypeOf<typeName>::inst = valName;
 
 mel_SpecializeTypeOfImpl_Fundamental(bool, bool_type)
 

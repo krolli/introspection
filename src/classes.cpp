@@ -1,6 +1,6 @@
 #include "classes.hpp"
 
-static const Member Vector3_members[] = {
+static constexpr const Member Vector3_members[] = {
     mel_MakeMemberInfo(Vector3, float, x),
     mel_MakeMemberInfo(Vector3, float, y),
     mel_MakeMemberInfo(Vector3, float, z),
@@ -14,7 +14,7 @@ DataIter A::GetDataIter()
 {
     return DataIter{this, TypeOf<A>::value};
 }
-static const Member A_members[] = {
+static constexpr const Member A_members[] = {
     mel_MakeMemberInfo(A, float, f32),
 };
 static constexpr const ClassType A_type = {
@@ -26,10 +26,10 @@ DataIter B::GetDataIter()
 {
     return DataIter{this, TypeOf<B>::value};
 }
-static const BaseType B_baseTypes[] = {
+static constexpr const BaseType B_baseTypes[] = {
     mel_MakeBaseTypeInfo(B, A),
 };
-static const Member B_members[] = {
+static constexpr const Member B_members[] = {
     mel_MakeMemberInfo(B, unsigned char, u8),
 };
 static constexpr const ClassType B_type = {
@@ -41,10 +41,10 @@ DataIter C::GetDataIter()
 {
     return DataIter{this, TypeOf<C>::value};
 }
-static const BaseType C_baseTypes[] = {
+static constexpr const BaseType C_baseTypes[] = {
     mel_MakeBaseTypeInfo(C, B),
 };
-static const Member C_members[] = {
+static constexpr const Member C_members[] = {
     mel_MakeMemberInfo(C, int, s32),
 };
 static constexpr const ClassType C_type = {
@@ -56,10 +56,10 @@ DataIter D::GetDataIter()
 {
     return DataIter{this, TypeOf<D>::value};
 }
-static const BaseType D_baseTypes[] = {
+static constexpr const BaseType D_baseTypes[] = {
     mel_MakeBaseTypeInfo(D, A),
 };
-static const Member D_members[] = {
+static constexpr const Member D_members[] = {
     mel_MakeMemberInfo(D, double, f64),
 };
 static constexpr const ClassType D_type = {
@@ -71,10 +71,10 @@ DataIter E::GetDataIter()
 {
     return DataIter{this, TypeOf<E>::value};
 }
-static const BaseType E_baseTypes[] = {
+static constexpr const BaseType E_baseTypes[] = {
     mel_MakeBaseTypeInfo(E, B),
 };
-static const Member E_members[] = {
+static constexpr const Member E_members[] = {
     mel_MakeMemberInfo(E, short, s16),
 };
 static constexpr const ClassType E_type = {
@@ -86,12 +86,12 @@ DataIter F::GetDataIter()
 {
     return DataIter{this, TypeOf<F>::value};
 }
-static const BaseType F_baseTypes[] = {
+static constexpr const BaseType F_baseTypes[] = {
     mel_MakeBaseTypeInfo(F, C),
     mel_MakeBaseTypeInfo(F, D),
     mel_MakeBaseTypeInfo(F, E),
 };
-static const Member F_members[] = {
+static constexpr const Member F_members[] = {
     mel_MakeMemberInfo(F, bool, b8),
     mel_MakeMemberInfo(F, Vector3, pos),
 };
