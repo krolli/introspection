@@ -29,5 +29,10 @@
 			"cmd": ["build/test" ],
 			"working_dir": "${project_path}",
 		},
+		{
+			"name": "ci",
+			"cmd": ["cmake", "-P", "cmake/ci.cmake"],
+			"working_dir": "${project_path}",
+		}
 	],
 }
