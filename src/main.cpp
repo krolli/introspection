@@ -1,6 +1,7 @@
 #include "classes.hpp"
 #include <cstddef>
 #include <cstdio>
+#include <vector>
 
 static constexpr const char INDENT[] = "                                                           ";
 
@@ -57,11 +58,25 @@ static void printMembers(ClassType const* type, void* data, char const* indent)
     }
 }
 
-static void printBaseClass(ClassType const* type, void* data, const char* indent)
+static void addVirtualBase(std::vector<DataIter>* virtualBases, ClassType const* type, void* data)
+{
+    for (const DataIter& virtualBase : *virtualBases)
+    {
+        if (virtualBase.type == type && virtualBase.data == data)
+            return;
+    }
+
+    virtualBases->push_back(DataIter{data, type});
+}
+
+static void printBaseClass(std::vector<DataIter>* virtualBases, ClassType const* type, void* data, const char* indent)
 {
     for (BaseType const& baseType : type->baseTypes)
     {
-        printBaseClass(baseType.type, baseType.access(data), indent);
+        if (baseType.flags & BaseType::Virtual)
+            addVirtualBase(virtualBases, baseType.type, baseType.access(data));
+        else
+            printBaseClass(virtualBases, baseType.type, baseType.access(data), indent);
     }
     printf("%s%p -> %s (size: %zu, alignment: %zu) {\n",
         indent, data, type->name, type->size, type->alignment
@@ -74,13 +89,27 @@ static void printBaseClass(ClassType const* type, void* data, const char* indent
 
 static void printClass(ClassType const* type, void* data, const char* indent)
 {
+    std::vector<DataIter> virtualBases;
     printf("%p -> %s (size: %zu, alignment: %zu) {\n",
         data, type->name, type->size, type->alignment
     );
     indent -= 2;
     for (BaseType const& baseType : type->baseTypes)
     {
-        printBaseClass(baseType.type, baseType.access(data), indent);
+        if (baseType.flags & BaseType::Virtual)
+            addVirtualBase(&virtualBases, baseType.type, baseType.access(data));
+        else
+            printBaseClass(&virtualBases, baseType.type, baseType.access(data), indent);
+    }
+
+    for (size_t i = 0; i < virtualBases.size(); i++)
+    {
+        printBaseClass(
+            &virtualBases,
+            static_cast<ClassType const*>(virtualBases[i].type),
+            virtualBases[i].data,
+            indent
+        );
     }
 
     printMembers(type, data, indent);

@@ -12,10 +12,17 @@ enum class TypeCategory : char
 
 struct BaseType
 {
+    enum Flags : unsigned char
+    {
+        NoFlags = 0,
+        Virtual = 1 << 0,
+    };
+
     using AccessFn = void* (void*);
 
     ClassType const* type;
     AccessFn* access;
+    Flags flags;
 };
 
 struct Member
@@ -94,8 +101,8 @@ void* InstanceToMember(void* selfAddr)
 #define mel_MakeMemberInfo(ownerType, memberType, memberName) \
     {#memberName, TypeOf<memberType>::value, InstanceToMember<ownerType, memberType, &ownerType::memberName>}
 
-#define mel_MakeBaseTypeInfo(type, baseType) \
-    {TypeOf<baseType>::value, InstanceToBase<type, baseType>}
+#define mel_MakeBaseTypeInfo(type, baseType, flags) \
+    {TypeOf<baseType>::value, InstanceToBase<type, baseType>, BaseType::Flags(flags)}
 
 mel_SpecializeTypeOf_Fundamental(bool)
 

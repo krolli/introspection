@@ -27,7 +27,7 @@ DataIter B::GetDataIter()
     return DataIter{this, TypeOf<B>::value};
 }
 static constexpr const BaseType B_baseTypes[] = {
-    mel_MakeBaseTypeInfo(B, A),
+    mel_MakeBaseTypeInfo(B, A, BaseType::Virtual),
 };
 static constexpr const Member B_members[] = {
     mel_MakeMemberInfo(B, unsigned char, u8),
@@ -42,7 +42,7 @@ DataIter C::GetDataIter()
     return DataIter{this, TypeOf<C>::value};
 }
 static constexpr const BaseType C_baseTypes[] = {
-    mel_MakeBaseTypeInfo(C, B),
+    mel_MakeBaseTypeInfo(C, B, BaseType::NoFlags),
 };
 static constexpr const Member C_members[] = {
     mel_MakeMemberInfo(C, int, s32),
@@ -57,7 +57,7 @@ DataIter D::GetDataIter()
     return DataIter{this, TypeOf<D>::value};
 }
 static constexpr const BaseType D_baseTypes[] = {
-    mel_MakeBaseTypeInfo(D, A),
+    mel_MakeBaseTypeInfo(D, A, BaseType::Virtual),
 };
 static constexpr const Member D_members[] = {
     mel_MakeMemberInfo(D, double, f64),
@@ -72,7 +72,7 @@ DataIter E::GetDataIter()
     return DataIter{this, TypeOf<E>::value};
 }
 static constexpr const BaseType E_baseTypes[] = {
-    mel_MakeBaseTypeInfo(E, B),
+    mel_MakeBaseTypeInfo(E, B, BaseType::NoFlags),
 };
 static constexpr const Member E_members[] = {
     mel_MakeMemberInfo(E, short, s16),
@@ -87,9 +87,9 @@ DataIter F::GetDataIter()
     return DataIter{this, TypeOf<F>::value};
 }
 static constexpr const BaseType F_baseTypes[] = {
-    mel_MakeBaseTypeInfo(F, C),
-    mel_MakeBaseTypeInfo(F, D),
-    mel_MakeBaseTypeInfo(F, E),
+    mel_MakeBaseTypeInfo(F, C, BaseType::NoFlags),
+    mel_MakeBaseTypeInfo(F, D, BaseType::NoFlags),
+    mel_MakeBaseTypeInfo(F, E, BaseType::NoFlags),
 };
 static constexpr const Member F_members[] = {
     mel_MakeMemberInfo(F, bool, b8),
