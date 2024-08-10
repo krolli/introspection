@@ -57,6 +57,8 @@ struct F : C, D, E
 {
     bool b8;
     Vector3 pos;
+    int* ps32;
+    int** pps32;
 
     DataIter GetDataIter() override;
 };

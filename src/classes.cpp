@@ -94,6 +94,8 @@ static constexpr const BaseType F_baseTypes[] = {
 static constexpr const Member F_members[] = {
     mel_MakeMemberInfo(F, bool, b8),
     mel_MakeMemberInfo(F, Vector3, pos),
+    mel_MakeMemberInfo(F, int*, ps32),
+    mel_MakeMemberInfo(F, int**, pps32),
 };
 static constexpr const ClassType F_type = {
     TypeCategory::Class, "F", sizeof(F), alignof(F), MakeSpan(F_baseTypes), MakeSpan(F_members),

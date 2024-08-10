@@ -7,6 +7,7 @@ struct ClassType;
 enum class TypeCategory : char
 {
     Fundamental,
+    Pointer,
     Class,
 };
 
@@ -44,6 +45,16 @@ struct Type
 
 struct FundamentalType : Type
 {
+};
+
+struct PointerType : Type
+{
+    Type const* pointeeType;
+
+    static void* access(void* data)
+    {
+        return *static_cast<void**>(data);
+    }
 };
 
 struct ClassType : Type
@@ -88,6 +99,15 @@ void* InstanceToMember(void* selfAddr)
     T* self = static_cast<T*>(selfAddr);
     return &(self->*ptr);
 }
+
+template<class T>
+struct TypeOf<T*>
+{
+    static inline constexpr PointerType const inst = {
+        TypeCategory::Pointer, "*", sizeof(void*), alignof(void*), TypeOf<T>::value,
+    };
+    static inline constexpr PointerType const * const value = &inst;
+};
 
 #define mel_SpecializeTypeOf_(typeCategory, typeName) \
     template<> struct TypeOf<typeName> { static typeCategory const inst; static inline constexpr typeCategory const * const value = &inst; };

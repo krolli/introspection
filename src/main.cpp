@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <vector>
+#include <cstdint>
 
 static constexpr const char INDENT[] = "                                                           ";
 
@@ -45,6 +46,17 @@ static void printFundamental(FundamentalType const* type, void* data, char const
     else
     {
         printf("???");
+    }
+}
+
+static void printPointer(PointerType const* type, void* data, char const* indent)
+{
+    void* val = type->access(data);
+    printf("0x%016X", uintptr_t(val));
+    if (val)
+    {
+        printf(" -> ");
+        printData_r(DataIter{val, type->pointeeType}, indent);
     }
 }
 
@@ -124,6 +136,9 @@ void printData_r(DataIter it, const char* indent)
         case TypeCategory::Fundamental:
             printFundamental(static_cast<FundamentalType const*>(it.type), it.data, indent);
             break;
+        case TypeCategory::Pointer:
+            printPointer(static_cast<PointerType const*>(it.type), it.data, indent);
+            break;
         case TypeCategory::Class:
             printClass(static_cast<ClassType const*>(it.type), it.data, indent);
             break;
@@ -148,6 +163,7 @@ void process(A* var)
 
 int main(int argc, char** argv)
 {
+    int a = 10;
     F var = {};
     var.f32 = 1.0f;
     static_cast<C&>(var).u8 = 'C';
@@ -159,6 +175,8 @@ int main(int argc, char** argv)
     var.pos.x = 125.0;
     var.pos.y = 75.5;
     var.pos.z = -109;
+    var.ps32 = &a;
+    var.pps32 = &var.ps32;
     process(&var);
     return 0;
 }
